@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Robot Control</title>
+        <script>
+            function sendCommand(cmd) {
+                fetch("/command", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ command: cmd }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => alert(data.response));
+            }
+
+            function askChatGPT() {
+                const query = document.getElementById("query").value;
+                fetch("/ask", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query: query }),
+                })
+                    .then((response) => response.text())
+                    .then(
+                        (data) =>
+                            (document.getElementById("response").innerText =
+                                data),
+                    );
+            }
+
+            function updateImage() {
+                if (document.getElementById("camera-autorefresh").checked) {
+                  console.log("hej")
+                  document.getElementById("cameraImage").src = "/image";
+                }
+            }
+
+            function connectWebSocket() {
+                const socket = new WebSocket("ws://localhost:8000/ws");
+                socket.onmessage = (event) => {
+                    document.getElementById("status").innerText = event.data;
+                };
+            }
+
+            window.onload = function () {
+                connectWebSocket();
+                setInterval(updateImage, 5000);
+            };
+        </script>
+        <style>
+            fieldset {
+                border: 2px solid #4caf50; /* Border color */
+                border-radius: 10px; /* Rounded corners */
+                padding: 20px;
+                width: 300px;
+            }
+
+            legend {
+                font-weight: bold;
+                color: #4caf50;
+                padding: 0 10px; /* Adds spacing around the text */
+            }
+
+            main {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+                width: 100%;
+            }
+
+            main > fieldset {
+                flex: 1;
+                min-width: 30%;
+                padding: 20px;
+            }
+
+            button {
+              background-color: #04AA6D; /* Green */
+              border: none;
+              color: white;
+              padding: 16px 32px;
+              text-align: center;
+              text-decoration: none;
+              display: inline-block;
+              font-size: 16px;
+              margin: 4px 2px;
+              transition-duration: 0.4s;
+              cursor: pointer;
+            }
+
+            button, input {
+              background-color: white;
+              color: black;
+              border: 2px solid #04AA6D;
+            }
+
+            button:hover {
+              background-color: #04AA6D;
+              color: white;
+            }
+
+            input {
+                padding: 16px 32px;
+                font-size: 16px;
+
+            }
+
+            @media only screen and (max-width: 800px) {
+              main > fieldset {
+                  min-width: 80%;
+              }
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Robot</h1>
+
+        <main>
+            <fieldset>
+                <legend>Status</legend>
+                <p>Status: <span id="status">Loading...</span></p>
+            </fieldset>
+
+            <fieldset>
+                <legend>Remote</legend>
+                <button onclick="sendCommand('capture')">Capture Image</button>
+                <button onclick="sendCommand('interpret')">Interpret Image</button>
+                <button onclick="sendCommand('status')">Get Status</button>
+            </fieldset>
+
+            <fieldset>
+                <legend>Kamera</legend>
+                <div>
+                    <img id="cameraImage" src="/image" width="300" alt="Latest Image" />
+                </div>
+                <input type="checkbox" id="camera-autorefresh" />
+                <label for="image-autorefresh">Auto-refresh</label>
+            </fieldset>
+
+            <fieldset>
+                <legend>Kommunikation</legend>
+                <div>
+                    <input type="text" id="query" placeholder="Ask the robot..." />
+                    <button onclick="askChatGPT()">Submit</buton>
+                </div>
+                <p id="response"></p>
+            </fieldset>
+        </main>
+    </body>
+</html>

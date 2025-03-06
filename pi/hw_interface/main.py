@@ -17,7 +17,6 @@ LATEST_IMG_PATH = Path("static/latest.jpg")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 SERVER_ADDRESS = ("localhost", int(os.getenv("IO_SOCKET_PORT", 65000)))
 
-# Robot I/O
 engine = Engine()
 
 def capture_image():

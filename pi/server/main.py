@@ -52,7 +52,7 @@ async def serve_frontend():
 
 @app.post("/command")
 async def send_command(request: CommandRequest):
-    response = await send_to_io(request.command)
+    response = await send_to_io(request.command.strip())
     return {"response": response}
 
 

@@ -25,25 +25,28 @@ class Engine:
         self.MOTOR_2.stop()
         self.status = "stopped"
 
-    def forward(self):
-        GPIO.output(self.PIN_MOTOR1_DIRECTION, GPIO.LOW)
-        GPIO.output(self.PIN_MOTOR2_DIRECTION, GPIO.LOW)
+    def _power(self):
         self.MOTOR_1.start(self.SPEED)
         self.MOTOR_2.start(self.SPEED)
         self.status = "running"
 
+    def forward(self):
+        GPIO.output(self.PIN_MOTOR1_DIRECTION, GPIO.LOW)
+        GPIO.output(self.PIN_MOTOR2_DIRECTION, GPIO.LOW)
+        self._power()
+
     def turn(self, direction):
-        if direction == "turn_left":
+        if direction == "left":
             GPIO.output(self.PIN_MOTOR1_DIRECTION, GPIO.HIGH)
             GPIO.output(self.PIN_MOTOR2_DIRECTION, GPIO.LOW)
 
-        elif direction == "turn_right":
+        elif direction == "right":
             GPIO.output(self.PIN_MOTOR1_DIRECTION, GPIO.LOW)
             GPIO.output(self.PIN_MOTOR2_DIRECTION, GPIO.HIGH)
 
-        self.forward()
+        self._power()
 
     def reverse(self):
         GPIO.output(self.PIN_MOTOR1_DIRECTION, GPIO.HIGH)
         GPIO.output(self.PIN_MOTOR2_DIRECTION, GPIO.HIGH)
-        self.forward()
+        self._power()

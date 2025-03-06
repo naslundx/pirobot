@@ -2,8 +2,9 @@
 set -ex
 
 cd ~/pirobot/pi
+source ~/.venv/bin/activate
+git stash
 git pull
 pip install -r requirements.txt
-source ~/.venv/bin/activate
 python3 -m hw_interface.main &
 cd server && fastapi dev main.py --host 0.0.0.0

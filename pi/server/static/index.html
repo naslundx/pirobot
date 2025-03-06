@@ -31,9 +31,22 @@
             }
 
             function updateImage() {
-                if (document.getElementById("camera-autorefresh").checked) {
-                  document.getElementById("cameraImage").src = "/image";
-                }
+                sendCommand("image_capture", (data) => {
+                  console.log(data);
+                  fetch("/image").then(
+                    (response) => response.blob()
+                  ).then(
+                    (blob) => URL.createObjectURL(blob)
+                  ).then(
+                    (url) => document.getElementById("cameraImage").src = url;
+                  )
+                });
+            }
+
+            function updateImageLoop() {
+              if (document.getElementById("camera-autorefresh").checked) {
+                updateImage();
+              }
             }
 
             function updateStatus() {
@@ -51,7 +64,7 @@
 
             window.onload = function () {
                 connectWebSocket();
-                setInterval(updateImage, 5000);
+                setInterval(updateImageLoop, 5000);
                 setInterval(updateStatus, 1000);
             };
         </script>
@@ -142,11 +155,11 @@
             <fieldset>
                 <legend>Kamera</legend>
                 <div>
-                    <img id="cameraImage" src="/image" width="300" alt="Latest Image" />
+                    <img id="cameraImage" src="" width="300" alt="Latest Image" />
                 </div>
                 <input type="checkbox" id="camera-autorefresh" />
-                <label for="image-autorefresh">Auto-refresh</label>
-                <button onclick="sendCommand('image_capture')">Capture Image</button>
+                <label for="camera-autorefresh">Auto-refresh</label>
+                <button onclick="updateImage()">Capture Image</button>
                 <!--<button onclick="sendCommand('interpret')">Interpret Image</button>-->
             </fieldset>
 

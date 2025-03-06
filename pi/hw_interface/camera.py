@@ -13,7 +13,5 @@ class FrontCamera:
 
     def capture(self, filename="latest"):
         path = self.path / f"{filename}.jpg"
-        #self.cam.start_preview()
         self.cam.take_photo(path)
-        #self.cam.stop_preview()
         return str(path)

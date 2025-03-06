@@ -50,6 +50,10 @@ def interpret_image():
 
 
 def handle_command(command):
+    if command == "stop":
+        engine.stop()
+        return "OK"
+
     if command == "forward":
         engine.forward()
         return "OK"
@@ -67,14 +71,12 @@ def handle_command(command):
         return "OK"
 
     if command == "status":
-        return { "engine": engine.status }
+        return "engines are on"
 
     return "Err"
 
 
 def hw_server():
-    print("hello")
-
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind(SERVER_ADDRESS)
     server.listen(5)

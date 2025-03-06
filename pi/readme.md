@@ -9,7 +9,7 @@ sudo apt update
 sudo apt upgrade
 sudo apt install -y python3-picamzero python3-picamera2 libcap-dev
 
-python3 -m venv .venv
+python3 -m venv --system-site-packages .venv
 source ./.venv/bin/activate
 pip install -r requirements.txt
 ```

@@ -17,11 +17,30 @@ from openai import OpenAI
 load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 IO_SOCKET = ("localhost", int(os.getenv("IO_SOCKET_PORT", 65000)))
-LATEST_IMG_PATH = Path("static/latest.jpg")
+HOME_DIR = os.environ['HOME']
+LATEST_IMG_PATH = Path(HOME_DIR) / "latest.jpg"
 
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+def interpret_image():
+    with open(LATEST_IMG_PATH, "rb") as image_file:
+        image_data = image_file.read()
+
+    response = client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        api_key=OPENAI_API_KEY,
+        messages=[{"role": "user", "content": "What is in this image?"}],
+        files=[{
+            "name": "image.jpg",
+            "type": "image/jpeg",
+            "data": image_data
+        }]
+    )
+
+    return response.choices[0].message.content
 
 
 class CommandRequest(BaseModel):

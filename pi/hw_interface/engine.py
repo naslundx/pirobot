@@ -31,8 +31,8 @@ class Engine:
         self.status = "running"
 
     def forward(self):
-        GPIO.output(self.PIN_MOTOR1_DIRECTION, GPIO.LOW)
-        GPIO.output(self.PIN_MOTOR2_DIRECTION, GPIO.LOW)
+        GPIO.output(self.PIN_MOTOR1_DIRECTION, GPIO.HIGH)
+        GPIO.output(self.PIN_MOTOR2_DIRECTION, GPIO.HIGH)
         self._power()
 
     def turn(self, direction):
@@ -47,6 +47,6 @@ class Engine:
         self._power()
 
     def reverse(self):
-        GPIO.output(self.PIN_MOTOR1_DIRECTION, GPIO.HIGH)
-        GPIO.output(self.PIN_MOTOR2_DIRECTION, GPIO.HIGH)
+        GPIO.output(self.PIN_MOTOR1_DIRECTION, GPIO.LOW)
+        GPIO.output(self.PIN_MOTOR2_DIRECTION, GPIO.LOW)
         self._power()

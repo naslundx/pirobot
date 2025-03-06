@@ -5,14 +5,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Robot Control</title>
         <script>
-            function sendCommand(cmd) {
+            function sendCommand(cmd, cb = null) {
                 fetch("/command", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ command: cmd }),
                 })
                     .then((response) => response.json())
-                    .then((data) => console.log(data.response));
+                    .then((data) => {
+                      if (cb) {
+                        cb(data);
+                      }
+                    });
             }
 
             function askChatGPT() {
@@ -23,30 +27,32 @@
                     body: JSON.stringify({ query: query }),
                 })
                     .then((response) => response.text())
-                    .then(
-                        (data) =>
-                            (document.getElementById("response").innerText =
-                                data),
-                    );
+                    .then((data) => document.getElementById("response").innerText = data);
             }
 
             function updateImage() {
                 if (document.getElementById("camera-autorefresh").checked) {
-                  console.log("hej")
                   document.getElementById("cameraImage").src = "/image";
                 }
             }
 
+            function updateStatus() {
+                sendCommand('status', (data) => {
+                  document.getElementById("status").innerText = data.response
+                })
+            }
+
             function connectWebSocket() {
                 const socket = new WebSocket("ws://localhost:8000/ws");
-                socket.onmessage = (event) => {
-                    document.getElementById("status").innerText = event.data;
-                };
+                //socket.onmessage = (event) => {
+                //    document.getElementById("status").innerText = event.data;
+                //};
             }
 
             window.onload = function () {
                 connectWebSocket();
                 setInterval(updateImage, 5000);
+                setInterval(updateStatus, 1000);
             };
         </script>
         <style>
@@ -125,9 +131,12 @@
 
             <fieldset>
                 <legend>Remote</legend>
-                <button onclick="sendCommand('capture')">Capture Image</button>
-                <button onclick="sendCommand('interpret')">Interpret Image</button>
-                <button onclick="sendCommand('status')">Get Status</button>
+                <button onclick="sendCommand('forward')">Forward</button>
+                <button onclick="sendCommand('turn_left')">Left</button>
+                <button onclick="sendCommand('turn_right')">Right</button>
+                <button onclick="sendCommand('reverse')">Reverse</button>
+
+                <button onclick="sendCommand('stop')">Stop</button>
             </fieldset>
 
             <fieldset>
@@ -137,6 +146,8 @@
                 </div>
                 <input type="checkbox" id="camera-autorefresh" />
                 <label for="image-autorefresh">Auto-refresh</label>
+                <button onclick="sendCommand('capture')">Capture Image</button>
+                <button onclick="sendCommand('interpret')">Interpret Image</button>
             </fieldset>
 
             <fieldset>

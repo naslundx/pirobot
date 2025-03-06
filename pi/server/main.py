@@ -27,6 +27,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 class CommandRequest(BaseModel):
     command: str
 
+
 async def send_to_io(command: str):
     try:
         reader, writer = await asyncio.open_connection(*IO_SOCKET)
@@ -39,17 +40,21 @@ async def send_to_io(command: str):
     except Exception as e:
         return f"Error communicating with IO: {e}"
 
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 @app.get("/", response_class=HTMLResponse)
 async def serve_frontend():
     with open("static/index.html", "r") as file:
         return file.read()
 
+
 @app.post("/command")
 async def send_command(request: CommandRequest):
     response = await send_to_io(request.command)
     return {"response": response}
+
 
 @app.get("/image")
 async def get_latest_image():
@@ -57,6 +62,7 @@ async def get_latest_image():
         return FileResponse(LATEST_IMG_PATH)
 
     return None
+
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -70,6 +76,7 @@ async def websocket_endpoint(websocket: WebSocket):
         except Exception:
             break
 
+
 @app.post("/ask")
 async def ask_chatgpt(request: Request):
     try:
@@ -79,7 +86,7 @@ async def ask_chatgpt(request: Request):
         response = client.chat.completions.create(
             model="gpt-4",
             messages=[{"role": "user", "content": user_input}],
-            #api_key=OPENAI_API_KEY
+            api_key=OPENAI_API_KEY
         )
 
         return response.choices[0].message.content

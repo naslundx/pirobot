@@ -4,9 +4,11 @@ import threading
 import os
 from pathlib import Path
 
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 from openai import OpenAI
 from dotenv import load_dotenv
+
+from .engine import Engine
 
 
 # client = OpenAI()
@@ -16,18 +18,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 SERVER_ADDRESS = ("localhost", int(os.getenv("IO_SOCKET_PORT", 65000)))
 
 # Robot I/O
-PIN_MOTOR1_SPEED = 12
-PIN_MOTOR1_DIRECTION = 26
-PIN_MOTOR2_SPEED = 13
-PIN_MOTOR2_DIRECTION = 24
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(PIN_MOTOR1_SPEED, GPIO.OUT)
-GPIO.setup(PIN_MOTOR2_SPEED, GPIO.OUT)
-GPIO.setup(PIN_MOTOR1_DIRECTION, GPIO.OUT)
-GPIO.setup(PIN_MOTOR2_DIRECTION, GPIO.OUT)
-MOTOR_1 = GPIO.PWM(PIN_MOTOR1_SPEED, 1000)
-MOTOR_2 = GPIO.PWM(PIN_MOTOR2_SPEED, 1000)
-
+engine = Engine()
 
 def capture_image():
     import cv2
@@ -38,6 +29,7 @@ def capture_image():
         cv2.imwrite(LATEST_IMG_PATH, frame)
 
     cap.release()
+
 
 def interpret_image():
     with open(LATEST_IMG_PATH, "rb") as image_file:
@@ -56,26 +48,33 @@ def interpret_image():
 
     return response.choices[0].message.content
 
+
 def handle_command(command):
     if command == "forward":
-        MOTOR_1.start(20)
-        MOTOR_2.start(20)
+        engine.forward()
         return "OK"
-    elif command == "stop":
-        MOTOR_1.stop()
-        MOTOR_2.stop()
-        return "OK"
-    elif command == "status":
-        return "Motors: Running, Battery: 85%"
-    # elif command == "capture":
-    #     capture_image()
-    #     return "Image captured."
-    # elif command == "interpret":
-    #     return interpret_image()
-    else:
-        return "Unknown command."
 
-def io_server():
+    if command == "turn_left":
+        engine.turn("left")
+        return "OK"
+
+    if command == "turn_right":
+        engine.turn("right")
+        return "OK"
+
+    if command == "reverse":
+        engine.reverse()
+        return "OK"
+
+    if command == "status":
+        return { "engine": engine.status }
+
+    return "Err"
+
+
+def hw_server():
+    print("hello")
+
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind(SERVER_ADDRESS)
     server.listen(5)
@@ -89,4 +88,4 @@ def io_server():
 
 
 if __name__ == "__main__":
-    io_server()
+    hw_server()

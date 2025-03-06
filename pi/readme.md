@@ -10,7 +10,10 @@ source ./.venv/bin/activate
 pip install -r requirements.txt
 ```
 
-# running
+## running
 ```sh
 fastapi dev server.py --host 0.0.0.0
 ```
+
+# auto boot?
+<!-- unclear start.sh -->

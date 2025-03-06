@@ -7,4 +7,4 @@ git stash
 git pull
 pip install -r requirements.txt
 python3 -m hw_interface.main &
-cd server && fastapi dev main.py --host 0.0.0.0
+cd server && fastapi run main.py --host 0.0.0.0 --port 80

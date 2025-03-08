@@ -62,7 +62,7 @@ def handle_command(command):
     if command == "status":
         return engine.status
 
-    if command.startsWith("engine "):
+    if command.startswith("engine "):
         speed = int(command.split(" ")[1])
         if 0 <= speed <= 100:
             engine.setSpeed(speed);

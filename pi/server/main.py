@@ -23,6 +23,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 IO_SOCKET = ("localhost", int(os.getenv("IO_SOCKET_PORT", 65000)))
 HOME_DIR = os.environ['HOME']
 LATEST_IMG_PATH = Path(HOME_DIR) / "latest.jpg"
+CAMERA_STREAM_FPS = 2
 
 
 camera = FrontCamera()
@@ -102,13 +103,13 @@ async def websocket_endpoint(websocket: WebSocket):
                 encoded_data = base64.b64encode(image_data).decode("utf-8")
                 await websocket.send_text(encoded_data)
 
-            after = time.time()
-            duration = after - before
-            if duration < 1:
-                await asyncio.sleep(1 - duration)
+            duration = time.time() - before
+            if duration < (1 / CAMERA_STREAM_FPS):
+                await asyncio.sleep((1 / CAMERA_STREAM_FPS) - duration)
 
-        except Exception:
-            break
+        except Exception as e:
+            print(e)
+            await asyncio.sleep(5)
 
 
 @app.post("/ask")

@@ -15,20 +15,21 @@
                 <p>Status: <span id="status">Loading...</span></p>
             </fieldset>
 
-            <fieldset>
-                <legend>Remote</legend>
-                <button onclick="sendCommand('forward')">Forward</button>
-                <button onclick="sendCommand('turn_left')">Left</button>
-                <button onclick="sendCommand('turn_right')">Right</button>
-                <button onclick="sendCommand('reverse')">Reverse</button>
-
-                <button onclick="sendCommand('stop')">Stop</button>
+            <fieldset id="remote">
+                <legend>Fjärrstyrning</legend>
+                <div>
+                    <button onclick="sendCommand('forward')" id="forward">▲</button>
+                    <button onclick="sendCommand('turn_left')" id="left">◀</button>
+                    <button onclick="sendCommand('stop')" id="stop">⏹</button>
+                    <button onclick="sendCommand('turn_right')" id="right">▶</button>
+                    <button onclick="sendCommand('reverse')" id="reverse">▼</button>
+                </div>
             </fieldset>
 
             <fieldset>
                 <legend>Kamera</legend>
                 <div>
-                    <img id="cameraImage" src="" width="300" alt="Latest Image" />
+                    <img id="cameraImage" src="" alt="Latest Image" />
                 </div>
                 <input type="checkbox" id="camera-autorefresh" />
                 <label for="camera-autorefresh">Auto-refresh</label>

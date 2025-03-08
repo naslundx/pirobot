@@ -5,6 +5,10 @@ fieldset {
     width: 300px;
 }
 
+fieldset img {
+    width: 100%;
+}
+
 legend {
     font-weight: bold;
     color: #4caf50;
@@ -59,4 +63,40 @@ input {
     main > fieldset {
         min-width: 80%;
     }
+}
+
+#remote div {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    width: 150px;
+    margin: auto;
+    text-align: center;
+}
+
+#remote #forward {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+#remote #left {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+#remote #stop {
+    grid-column: 2;
+    grid-row: 2;
+    background: red;
+    color: white;
+}
+
+#remote #right {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+#remote #reverse {
+    grid-column: 2;
+    grid-row: 3;
 }

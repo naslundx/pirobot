@@ -4,6 +4,7 @@ import socket
 import base64
 import asyncio
 import websockets
+import time
 from pathlib import Path
 from fastapi import FastAPI, WebSocket, Request, Depends
 from fastapi.staticfiles import StaticFiles
@@ -11,11 +12,9 @@ from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from openai import OpenAI
-import time
 
 from .camera import FrontCamera
-
-# client = OpenAI()
+from .engine import Engine
 
 # Load environment variables
 load_dotenv()
@@ -25,10 +24,51 @@ HOME_DIR = os.environ['HOME']
 LATEST_IMG_PATH = Path(HOME_DIR) / "latest.jpg"
 CAMERA_STREAM_FPS = 2
 
-
+# HW interface
 camera = FrontCamera()
+engine = Engine()
+# client = OpenAI()
+
+# Server
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+class CommandRequest(BaseModel):
+    command: str
+
+
+def handle_command(command):
+    if command == "stop":
+        engine.stop()
+        return "OK"
+
+    if command == "forward":
+        engine.forward()
+        return "OK"
+
+    if command == "turn_left":
+        engine.turn("left")
+        return "OK"
+
+    if command == "turn_right":
+        engine.turn("right")
+        return "OK"
+
+    if command == "reverse":
+        engine.reverse()
+        return "OK"
+
+    if command == "status":
+        return engine.status
+
+    if command.startsWith("engine "):
+        speed = int(command.split(" ")[1])
+        if 0 <= speed <= 100:
+            engine.setSpeed(speed);
+        return "OK"
+
+    return "Err"
 
 
 def interpret_image():
@@ -49,26 +89,6 @@ def interpret_image():
     return response.choices[0].message.content
 
 
-class CommandRequest(BaseModel):
-    command: str
-
-
-async def send_to_io(command: str):
-    try:
-        reader, writer = await asyncio.open_connection(*IO_SOCKET)
-        writer.write(command.encode())
-        await writer.drain()
-        response = await reader.read(1024)
-        writer.close()
-        await writer.wait_closed()
-        return response.decode()
-    except Exception as e:
-        return f"Error communicating with IO: {e}"
-
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-
 @app.get("/", response_class=HTMLResponse)
 async def serve_frontend():
     with open("static/index.html", "r") as file:
@@ -77,7 +97,11 @@ async def serve_frontend():
 
 @app.post("/command")
 async def send_command(request: CommandRequest):
-    response = await send_to_io(request.command.strip())
+    try:
+        response = handle_command(request.command.strip())
+    except Exception:
+        response = "Error"
+
     return {"response": response}
 
 

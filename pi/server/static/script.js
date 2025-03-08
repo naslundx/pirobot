@@ -23,25 +23,6 @@ function askChatGPT() {
     .then((data) => (document.getElementById("response").innerText = data));
 }
 
-/*function updateImage() {
-    sendCommand("image_capture", (data) => {
-      console.log(data);
-      fetch("/image").then(
-        (response) => response.blob()
-      ).then(
-        (blob) => URL.createObjectURL(blob)
-      ).then(
-        (url) => document.getElementById("cameraImage").src = url
-      )
-    });
-}
-
-function updateImageLoop() {
-  if (document.getElementById("camera-autorefresh").checked) {
-    updateImage();
-  }
-}*/
-
 function updateStatus() {
   sendCommand("status", (data) => {
     document.getElementById("status").innerText = data.response;
@@ -58,8 +39,14 @@ function connectCameraWebSocket() {
   socket.onerror = (err) => console.error("WebSocket error:", err);
 }
 
+function onSpeedUpdate() {
+  let value = document.getElementById("myRange").value;
+  sendCommand(`engine ${value}`);
+}
+
 window.onload = function () {
   connectCameraWebSocket();
   //setInterval(updateImageLoop, 5000);
-  setInterval(updateStatus, 1000);
+  //setInterval(updateStatus, 1000);
+  document.getElementById("myRange").oninput = onSpeedUpdate;
 };

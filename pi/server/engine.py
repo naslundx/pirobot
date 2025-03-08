@@ -30,6 +30,10 @@ class Engine:
         self.MOTOR_2.start(self.SPEED)
         self.status = "running"
 
+    def setSpeed(self, value):
+        if 0 <= value <= 100:
+            self.SPEED = value / 2
+
     def forward(self):
         GPIO.output(self.PIN_MOTOR1_DIRECTION, GPIO.HIGH)
         GPIO.output(self.PIN_MOTOR2_DIRECTION, GPIO.HIGH)

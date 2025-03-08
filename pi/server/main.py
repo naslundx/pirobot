@@ -11,10 +11,9 @@ from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from openai import OpenAI
+from time import sleep
 
 from .camera import FrontCamera
-
-camera = FrontCamera()
 
 # client = OpenAI()
 
@@ -26,6 +25,8 @@ HOME_DIR = os.environ['HOME']
 LATEST_IMG_PATH = Path(HOME_DIR) / "latest.jpg"
 
 
+camera = FrontCamera()
+sleep(3)
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 

@@ -49,7 +49,7 @@ function updateStatus() {
 }
 
 function connectCameraWebSocket() {
-  const socket = new WebSocket("ws://localhost:8000/ws/camera");
+  const socket = new WebSocket(`ws://${window.location.host}/ws/camera`);
   socket.onmessage = (event) => {
     document.getElementById("cameraImage").src =
       "data:image/jpeg;base64," + event.data;

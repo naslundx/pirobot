@@ -32,7 +32,10 @@ class Engine:
 
     def setSpeed(self, value):
         if 0 <= value <= 100:
-            self.SPEED = value / 2
+            print(f"setSpeed({value})")
+            self.SPEED = value
+            self.stop()
+            self._power()
 
     def forward(self):
         GPIO.output(self.PIN_MOTOR1_DIRECTION, GPIO.HIGH)

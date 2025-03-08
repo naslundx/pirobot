@@ -32,8 +32,7 @@ class Engine:
 
     def setSpeed(self, value):
         if 0 <= value <= 100:
-            print(f"setSpeed({value})")
-            self.SPEED = value
+            self.SPEED = value / 2
             self.stop()
             self._power()
 

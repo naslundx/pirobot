@@ -11,7 +11,7 @@ from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from openai import OpenAI
-from time import sleep
+import time
 
 from .camera import FrontCamera
 
@@ -26,7 +26,6 @@ LATEST_IMG_PATH = Path(HOME_DIR) / "latest.jpg"
 
 
 camera = FrontCamera()
-sleep(3)
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -95,6 +94,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
     while True:
         try:
+            before = time.time()
             camera.capture()
 
             with open(LATEST_IMG_PATH, "rb") as image_file:
@@ -102,8 +102,10 @@ async def websocket_endpoint(websocket: WebSocket):
                 encoded_data = base64.b64encode(image_data).decode("utf-8")
                 await websocket.send_text(encoded_data)
 
-            # TODO Adapt waiting time
-            await asyncio.sleep(1)
+            after = time.time()
+            duration = after - before
+            if duration < 1:
+                await asyncio.sleep(1 - duration)
 
         except Exception:
             break

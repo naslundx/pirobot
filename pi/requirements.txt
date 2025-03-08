@@ -4,3 +4,4 @@ dotenv
 openai
 RPi.GPIO
 picamzero
+picamera2

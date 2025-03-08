@@ -1,6 +1,7 @@
 import os
 import json
 import socket
+import base64
 import asyncio
 import websockets
 from pathlib import Path
@@ -10,6 +11,10 @@ from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from openai import OpenAI
+
+from .camera import FrontCamera
+
+camera = FrontCamera()
 
 # client = OpenAI()
 
@@ -83,15 +88,22 @@ async def get_latest_image():
     return None
 
 
-@app.websocket("/ws")
+@app.websocket("/ws/camera")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
 
     while True:
         try:
-            response = await send_to_io("status")
-            await websocket.send_text(response)
-            await asyncio.sleep(2)
+            camera.capture()
+
+            with open(LATEST_IMG_PATH, "rb") as image_file:
+                image_data = image_file.read()
+                encoded_data = base64.b64encode(image_data).decode("utf-8")
+                await websocket.send_text(encoded_data)
+
+            # TODO Adapt waiting time
+            await asyncio.sleep(1)
+
         except Exception:
             break
 

@@ -4,134 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Robot Control</title>
-        <script>
-            function sendCommand(cmd, cb = null) {
-                fetch("/command", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ command: cmd }),
-                })
-                    .then((response) => response.json())
-                    .then((data) => {
-                      if (cb) {
-                        cb(data);
-                      }
-                    });
-            }
-
-            function askChatGPT() {
-                const query = document.getElementById("query").value;
-                fetch("/ask", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ query: query }),
-                })
-                    .then((response) => response.text())
-                    .then((data) => document.getElementById("response").innerText = data);
-            }
-
-            function updateImage() {
-                sendCommand("image_capture", (data) => {
-                  console.log(data);
-                  fetch("/image").then(
-                    (response) => response.blob()
-                  ).then(
-                    (blob) => URL.createObjectURL(blob)
-                  ).then(
-                    (url) => document.getElementById("cameraImage").src = url
-                  )
-                });
-            }
-
-            function updateImageLoop() {
-              if (document.getElementById("camera-autorefresh").checked) {
-                updateImage();
-              }
-            }
-
-            function updateStatus() {
-                sendCommand('status', (data) => {
-                  document.getElementById("status").innerText = data.response
-                })
-            }
-
-            function connectWebSocket() {
-                const socket = new WebSocket("ws://localhost:8000/ws");
-                //socket.onmessage = (event) => {
-                //    document.getElementById("status").innerText = event.data;
-                //};
-            }
-
-            window.onload = function () {
-                connectWebSocket();
-                setInterval(updateImageLoop, 5000);
-                setInterval(updateStatus, 1000);
-            };
-        </script>
-        <style>
-            fieldset {
-                border: 2px solid #4caf50; /* Border color */
-                border-radius: 10px; /* Rounded corners */
-                padding: 20px;
-                width: 300px;
-            }
-
-            legend {
-                font-weight: bold;
-                color: #4caf50;
-                padding: 0 10px; /* Adds spacing around the text */
-            }
-
-            main {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 20px;
-                width: 100%;
-            }
-
-            main > fieldset {
-                flex: 1;
-                min-width: 30%;
-                padding: 20px;
-            }
-
-            button {
-              background-color: #04AA6D; /* Green */
-              border: none;
-              color: white;
-              padding: 16px 32px;
-              text-align: center;
-              text-decoration: none;
-              display: inline-block;
-              font-size: 16px;
-              margin: 4px 2px;
-              transition-duration: 0.4s;
-              cursor: pointer;
-            }
-
-            button, input {
-              background-color: white;
-              color: black;
-              border: 2px solid #04AA6D;
-            }
-
-            button:hover {
-              background-color: #04AA6D;
-              color: white;
-            }
-
-            input {
-                padding: 16px 32px;
-                font-size: 16px;
-
-            }
-
-            @media only screen and (max-width: 800px) {
-              main > fieldset {
-                  min-width: 80%;
-              }
-            }
-        </style>
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
         <h1>Robot</h1>
@@ -172,5 +45,6 @@
                 <p id="response"></p>
             </fieldset>
         </main>
+        <script src="script.js"></script>
     </body>
 </html>

@@ -8,7 +8,7 @@ from pathlib import Path
 from openai import OpenAI
 from dotenv import load_dotenv
 
-from .camera import FrontCamera
+
 from .engine import Engine
 
 
@@ -17,7 +17,7 @@ LATEST_IMG_PATH = Path("static/latest.jpg")
 SERVER_ADDRESS = ("localhost", int(os.getenv("IO_SOCKET_PORT", 65000)))
 
 engine = Engine()
-camera = FrontCamera()
+
 
 
 def handle_command(command):
@@ -44,9 +44,9 @@ def handle_command(command):
     if command == "status":
         return "engines are on"
 
-    if command == "image_capture":
-        filename = camera.capture()
-        return filename
+    #if command == "image_capture":
+    #    filename = camera.capture()
+    #    return filename
 
     return "Err"
 

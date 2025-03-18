@@ -5,29 +5,29 @@ import base64
 import asyncio
 import websockets
 import time
+import RPi.GPIO as GPIO
 from pathlib import Path
 from fastapi import FastAPI, WebSocket, Request, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
-from openai import OpenAI
 
+from .ai import AIConnection
 from .camera import FrontCamera
 from .engine import Engine
 
 # Load environment variables
 load_dotenv()
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-IO_SOCKET = ("localhost", int(os.getenv("IO_SOCKET_PORT", 65000)))
 HOME_DIR = os.environ['HOME']
 LATEST_IMG_PATH = Path(HOME_DIR) / "latest.jpg"
 CAMERA_STREAM_FPS = 2
 
 # HW interface
+GPIO.setmode(GPIO.BCM)
 camera = FrontCamera()
 engine = Engine()
-# client = OpenAI()
+ai = AIConnection()
 
 # Server
 app = FastAPI()
@@ -48,11 +48,11 @@ def handle_command(command):
         return "OK"
 
     if command == "turn_left":
-        engine.turn("left")
+        engine.turnLeft()
         return "OK"
 
     if command == "turn_right":
-        engine.turn("right")
+        engine.turnRight()
         return "OK"
 
     if command == "reverse":
@@ -69,24 +69,6 @@ def handle_command(command):
         return "OK"
 
     return "Err"
-
-
-def interpret_image():
-    with open(LATEST_IMG_PATH, "rb") as image_file:
-        image_data = image_file.read()
-
-    response = client.chat.completions.create(
-        model="gpt-4-vision-preview",
-        api_key=OPENAI_API_KEY,
-        messages=[{"role": "user", "content": "What is in this image?"}],
-        files=[{
-            "name": "image.jpg",
-            "type": "image/jpeg",
-            "data": image_data
-        }]
-    )
-
-    return response.choices[0].message.content
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -141,14 +123,8 @@ async def ask_chatgpt(request: Request):
     try:
         data = await request.json()
         user_input = data.get("query", "")
-
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": user_input}],
-            api_key=OPENAI_API_KEY
-        )
-
-        return response.choices[0].message.content
+        response = ai.get_response(user_input)
+        return response
 
     except:
         return "N/A"

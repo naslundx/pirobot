@@ -1,6 +1,4 @@
-import base64
 import json
-from pathlib import Path
 from openai import OpenAI
 
 

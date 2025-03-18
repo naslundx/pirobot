@@ -1,8 +1,6 @@
-from pathlib import Path
 from time import sleep
 import base64
 import io
-import os
 import time
 
 from picamera2 import Picamera2

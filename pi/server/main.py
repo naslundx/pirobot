@@ -1,13 +1,10 @@
-import os
-import base64
 import asyncio
 import time
 import threading
 import RPi.GPIO as GPIO
-from pathlib import Path
 from fastapi import FastAPI, WebSocket, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 

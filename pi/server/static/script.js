@@ -24,8 +24,11 @@ function askChatGPT() {
 }
 
 function updateStatus() {
-  sendCommand("status", (data) => {
-    document.getElementById("status").innerText = data.response;
+  sendCommand("engine_status", (data) => {
+    document.getElementById("engine_status").innerText = data.response;
+  });
+  sendCommand("ai_status", (data) => {
+    document.getElementById("ai_status").innerText = data.response;
   });
 }
 

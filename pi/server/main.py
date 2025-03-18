@@ -1,13 +1,11 @@
 import os
-import json
-import socket
 import base64
 import asyncio
-import websockets
 import time
+import threading
 import RPi.GPIO as GPIO
 from pathlib import Path
-from fastapi import FastAPI, WebSocket, Request, Depends
+from fastapi import FastAPI, WebSocket, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel
@@ -19,8 +17,8 @@ from .engine import Engine
 
 # Load environment variables
 load_dotenv()
-HOME_DIR = os.environ['HOME']
-LATEST_IMG_PATH = Path(HOME_DIR) / "latest.jpg"
+HOME_DIR = Path(os.environ['HOME'])
+LATEST_IMG_PATH = HOME_DIR / "latest.jpg"
 CAMERA_STREAM_FPS = 2
 
 # HW interface
@@ -33,6 +31,27 @@ ai = AIConnection()
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# AI
+def background_task():
+    while True:
+        if not ai.AUTONOMOUS:
+            time.sleep(3)
+            continue
+
+        command = ai.get_next_command()
+        if command is None:
+            ai.update_towards_goal(LATEST_IMG_PATH)
+
+        elif command == "done":
+            ai.AUTONOMOUS = False
+
+        else:
+            handle_command(command)
+            time.sleep(2)
+
+thread = threading.Thread(target=background_task, daemon=True)
+thread.start()
+
 
 class CommandRequest(BaseModel):
     command: str
@@ -40,6 +59,7 @@ class CommandRequest(BaseModel):
 
 def handle_command(command):
     if command == "stop":
+        ai.AUTONOMOUS = False
         engine.stop()
         return "OK"
 
@@ -59,13 +79,21 @@ def handle_command(command):
         engine.reverse()
         return "OK"
 
-    if command == "status":
+    if command == "engine_status":
         return engine.status
+
+    if command == "ai_status":
+        return ai.status
+
+    if command.startswith("goal "):
+        goal = command[5:].strip()
+        ai.set_goal(goal)
+        ai.AUTONOMOUS = True
 
     if command.startswith("engine "):
         speed = int(command.split(" ")[1])
         if 0 <= speed <= 100:
-            engine.setSpeed(speed);
+            engine.setSpeed(speed // 4)
         return "OK"
 
     return "Err"
@@ -120,11 +148,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
 @app.post("/ask")
 async def ask_chatgpt(request: Request):
-    try:
-        data = await request.json()
-        user_input = data.get("query", "")
-        response = ai.get_response(user_input)
-        return response
-
-    except:
-        return "N/A"
+    data = await request.json()
+    user_input = data.get("query", "")
+    response = ai.get_response(user_input)
+    return response

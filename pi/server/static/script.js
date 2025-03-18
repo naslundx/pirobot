@@ -23,6 +23,13 @@ function askChatGPT() {
     .then((data) => (document.getElementById("response").innerText = data));
 }
 
+function setAI() {
+  const query = document.getElementById("aicmd").value;
+  sendCommand("goal " + query, (data) => {
+    console.log(data);
+  });
+}
+
 function updateStatus() {
   sendCommand("engine_status", (data) => {
     document.getElementById("engine_status").innerText = data.response;

@@ -30,7 +30,7 @@ Return a JSON with description, a memory, and a list of commands.
 class AIConnection:
     def __init__(self):
         self.client = OpenAI()
-        self.AUTONOMOUS = False
+        self.is_autonomous = False
 
         self._goal = ""
         self._memory = "Just started."

@@ -34,7 +34,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # AI
 def background_task():
     while True:
-        if not ai.AUTONOMOUS:
+        if not ai.is_autonomous:
             time.sleep(3)
             continue
 
@@ -43,7 +43,7 @@ def background_task():
             ai.update_towards_goal(LATEST_IMG_PATH)
 
         elif command == "done":
-            ai.AUTONOMOUS = False
+            ai.is_autonomous = False
 
         else:
             handle_command(command)
@@ -59,7 +59,7 @@ class CommandRequest(BaseModel):
 
 def handle_command(command):
     if command == "stop":
-        ai.AUTONOMOUS = False
+        ai.is_autonomous = False
         engine.stop()
         return "OK"
 
@@ -88,7 +88,7 @@ def handle_command(command):
     if command.startswith("goal "):
         goal = command[5:].strip()
         ai.set_goal(goal)
-        ai.AUTONOMOUS = True
+        ai.is_autonomous = True
 
     if command.startswith("engine "):
         speed = int(command.split(" ")[1])

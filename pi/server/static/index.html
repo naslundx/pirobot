@@ -12,8 +12,16 @@
         <main>
             <fieldset>
                 <legend>Status</legend>
-                <p>Engine: <span id="engine_status">Loading...</span></p>
-                <p>AI: <span id="ai_status">Loading...</span></p>
+                <p>Motor: <span id="engine_status">...</span></p>
+                <p>AI: <span id="ai_status">...</span></p>
+            </fieldset>
+
+            <fieldset>
+                <legend>AI</legend>
+                <div>
+                    <input type="text" id="aicmd" placeholder="Command the robot..." />
+                    <button onclick="setAI()">Submit</buton>
+                </div>
             </fieldset>
 
             <fieldset id="remote">

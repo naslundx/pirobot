@@ -3,7 +3,8 @@ import base64
 import io
 import time
 
-from picamera2 import Picamera2, Transform
+import libcamera
+from picamera2 import Picamera2
 
 
 class FrontCamera:
@@ -13,8 +14,12 @@ class FrontCamera:
         self.CACHE_LIMIT = 500
 
         self.camera = Picamera2()
-        main = {"format": "RGB888", "size": (640, 480), "transform": Transform(vflip=1)}
+        main = {
+            "format": "RGB888",
+            "size": (640, 480),
+        }
         config = self.camera.create_still_configuration(main=main)
+        config["transform"] = libcamera.Transform(hflip=1, vflip=1)
         self.camera.configure(config)
         self.camera.options["quality"] = 80
         self.camera.start()

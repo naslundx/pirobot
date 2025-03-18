@@ -44,6 +44,7 @@ class EngineData:
 
 class Engine:
     def __init__(self):
+        self.DEFAULT_SPEED = 15
         self.MOTOR_1 = EngineData(pin_speed=12, pin_direction=26)
         self.MOTOR_2 = EngineData(pin_speed=13, pin_direction=24)
         self.MOTOR_1.setup()
@@ -65,19 +66,19 @@ class Engine:
     def forward(self):
         self.MOTOR_1.setDirection(Direction.FORWARD)
         self.MOTOR_2.setDirection(Direction.FORWARD)
-        self.setSpeed(10)
+        self.setSpeed(self.DEFAULT_SPEED)
 
     def turnLeft(self):
         self.MOTOR_1.setDirection(Direction.FORWARD)
         self.MOTOR_2.setDirection(Direction.BACKWARD)
-        self.setSpeed(10)
+        self.setSpeed(self.DEFAULT_SPEED)
 
     def turnRight(self):
         self.MOTOR_1.setDirection(Direction.BACKWARD)
         self.MOTOR_2.setDirection(Direction.FORWARD)
-        self.setSpeed(10)
+        self.setSpeed(self.DEFAULT_SPEED)
 
     def reverse(self):
         self.MOTOR_1.setDirection(Direction.BACKWARD)
         self.MOTOR_2.setDirection(Direction.BACKWARD)
-        self.setSpeed(10)
+        self.setSpeed(self.DEFAULT_SPEED)

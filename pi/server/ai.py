@@ -17,16 +17,16 @@ Output: JSON: {{ "description": "A large clown covers most of the image. Goal ha
 Input: The goal is "Turn right 90 degrees".
 Output: JSON: {{ "description": "Image description", "memory": "Has turned right.", "commands": ["turn_right", "turn_right", "done"] }}
 
-Input: The input contains a blurry image.
-Output: JSON: {{ "description": "Blurry image.", "memory": "Stopping once to get a fresh camera image.", "commands": ["pass"] }}
+Input: The input is black.
+Output: JSON: {{ "description": "Black image.", "memory": "Camera error or bumped up against a wall. Stopped once to get a fresh camera image.", "commands": ["pass"] }}
 
-Input: The input contains a blurry image and the memory says the robot has stopped once to get a fresh camera image.
-Output: JSON: {{ "description": "Blurry image.", "memory": "Has tried to get fresh image, reversing to get a better overview.", "commands": ["reverse"] }}
+Input: The input is black and memory says the robot has stopped once.
+Output: JSON: {{ "description": "Black image.", "memory": "Reversed to get better image.", "commands": ["reverse"] }}
 
 Possible commands are:
 - forward, reverse: Moves forward or backward for 1.5 seconds and then stops.
 - turn_left, turn_right: Turns 45 degrees to the left or to the right.
-- pass: Do nothing
+- pass: Do nothing this time.
 - done: Indicates that the goal has been reached.
 
 Current goal: {goal}

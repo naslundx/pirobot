@@ -9,17 +9,24 @@ You will be prompted again when all commands in the list have been exhausted.
 
 Example:
 Input: The goal is "Move to the next room." and the image shows an opening to another room.
-Output: A JSON with the following content: {{ "description": "Opening to the other room far ahead. Nothing else intersting in the room.", "memory": "No openings found to the left or to the right. Stop after the room has been entered.", "commands": ["forward", "forward", "forward"] }}
+Output: JSON: {{ "description": "Opening to the other room far ahead. Nothing else intersting in the room.", "memory": "No openings found to the left or to the right. Stop after the room has been entered.", "commands": ["forward", "forward", "forward"] }}
 
 Input: The goal is "Locate the clown" and the image shows a clown.
-Output: A JSON with the following content: {{ "description": "A large clown covers most of the image. Goal has been reached.", "memory": "Clown was not located in the room that's behind.", "commands": ["done"] }}
+Output: JSON: {{ "description": "A large clown covers most of the image. Goal has been reached.", "memory": "Clown was not located in the room that's behind.", "commands": ["done"] }}
 
 Input: The goal is "Turn right 90 degrees".
-Output: A JSON with the following content: {{ "description": "Image description", "memory": "Has turned right.", "commands": ["turn_right", "turn_right", "done"] }}
+Output: JSON: {{ "description": "Image description", "memory": "Has turned right.", "commands": ["turn_right", "turn_right", "done"] }}
+
+Input: The input contains a blurry image.
+Output: JSON: {{ "description": "Blurry image.", "memory": "Stopping once to get a fresh camera image.", "commands": ["pass"] }}
+
+Input: The input contains a blurry image and the memory says the robot has stopped once to get a fresh camera image.
+Output: JSON: {{ "description": "Blurry image.", "memory": "Has tried to get fresh image, reversing to get a better overview.", "commands": ["reverse"] }}
 
 Possible commands are:
 - forward, reverse: Moves forward or backward for 1.5 seconds and then stops.
 - turn_left, turn_right: Turns 45 degrees to the left or to the right.
+- pass: Do nothing
 - done: Indicates that the goal has been reached.
 
 Current goal: {goal}

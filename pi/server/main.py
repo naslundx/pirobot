@@ -92,7 +92,7 @@ def handle_command(command):
     if command.startswith("engine "):
         speed = int(command.split(" ")[1])
         if 0 <= speed <= 100:
-            engine.setSpeed(speed // 4)
+            engine.setSpeed(speed // 2)
         return "OK"
 
     return "Err"

@@ -44,7 +44,7 @@ class EngineData:
 
 class Engine:
     def __init__(self):
-        self.DEFAULT_SPEED = 15
+        self.DEFAULT_SPEED = 20
         self.MOTOR_1 = EngineData(pin_speed=12, pin_direction=26)
         self.MOTOR_2 = EngineData(pin_speed=13, pin_direction=24)
         self.MOTOR_1.setup()

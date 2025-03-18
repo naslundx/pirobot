@@ -65,15 +65,19 @@ class Engine:
     def forward(self):
         self.MOTOR_1.setDirection(Direction.FORWARD)
         self.MOTOR_2.setDirection(Direction.FORWARD)
+        self.setSpeed(20)
 
     def turnLeft(self):
         self.MOTOR_1.setDirection(Direction.FORWARD)
         self.MOTOR_2.setDirection(Direction.BACKWARD)
+        self.setSpeed(20)
 
     def turnRight(self):
         self.MOTOR_1.setDirection(Direction.BACKWARD)
         self.MOTOR_2.setDirection(Direction.FORWARD)
+        self.setSpeed(20)
 
     def reverse(self):
         self.MOTOR_1.setDirection(Direction.BACKWARD)
         self.MOTOR_2.setDirection(Direction.BACKWARD)
+        self.setSpeed(20)

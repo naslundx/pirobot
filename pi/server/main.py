@@ -39,13 +39,16 @@ def background_task():
             handle_command('engine 0')
             image_data = camera.capture_as_base64()
             ai.update_towards_goal(image_data)
+            continue
 
-        elif command == "done":
+        command = command.strip().lower()
+
+        if command == "done":
+            handle_command('engine 0')
             ai.is_autonomous = False
-
         else:
             handle_command(command)
-            time.sleep(1)
+            time.sleep(2)
 
 thread = threading.Thread(target=background_task, daemon=True)
 thread.start()

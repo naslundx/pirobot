@@ -12,10 +12,13 @@ Output: A JSON with the following content: {{ "description": "Opening to the oth
 Input: The goal is "Locate the clown" and the image shows a clown.
 Output: A JSON with the following content: {{ "description": "A large clown covers most of the image. Goal has been reached.", "memory": "Clown was not located in the room that's behind.", "commands": ["done"] }}
 
+Input: The goal is "Turn right 90 degrees".
+Output: A JSON with the following content: {{ "description": "Image description", "memory": "Same memory as before", "commands": ["turn_right", "turn_right"] }}
+
 Possible commands:
-FORWARD, REVERSE: Moves forward or backward for 2 seconds and then stops.
-TURN_LEFT, TURN_RIGHT: Turns 45 degrees to the left or to the right.
-DONE: Indicates that the goal has been reached.
+forward, reverse: Moves forward or backward for 2 seconds and then stops.
+turn_left, turn_right: Turns 45 degrees to the left or to the right.
+done: Indicates that the goal has been reached.
 
 You will be prompted with a new image and the returned memory when all commands in the list have been exhausted.
 

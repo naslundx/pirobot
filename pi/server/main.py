@@ -12,11 +12,9 @@ from .ai import AIConnection
 from .camera import FrontCamera
 from .engine import Engine
 
-# Load environment variables
+# Set environment and HW
 load_dotenv()
-CAMERA_STREAM_FPS = 1
-
-# HW interface
+CAMERA_STREAM_FPS = 2
 GPIO.setmode(GPIO.BCM)
 camera = FrontCamera()
 engine = Engine()

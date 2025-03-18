@@ -51,6 +51,8 @@ class AIConnection:
         return None
 
     def set_goal(self, goal):
+        self._commands = []
+        self._memory = ""
         self._goal = goal
 
     def set_memory(self, memory):
@@ -98,4 +100,4 @@ class AIConnection:
         print("---")
         print("AI Description:", self._latest_description)
         print("AI Memory:", self._memory)
-        print("AI commands:", self._commands)
+        print("AI Commands:", self._commands)

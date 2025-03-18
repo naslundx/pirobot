@@ -48,7 +48,7 @@ def background_task():
             ai.is_autonomous = False
         else:
             handle_command(command)
-            time.sleep(2)
+            time.sleep(1.5)
 
 thread = threading.Thread(target=background_task, daemon=True)
 thread.start()

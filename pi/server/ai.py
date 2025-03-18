@@ -31,10 +31,11 @@ class AIConnection:
     def __init__(self):
         self.client = OpenAI()
         self.is_autonomous = False
+        self.busy = False
 
         self._goal = ""
         self._memory = "Just started."
-        self._latest_description = ""
+        self._latest_description = "N/A"
         self._commands = []
 
     @property
@@ -63,10 +64,7 @@ class AIConnection:
 
         return response.choices[0].message.content
 
-    def update_towards_goal(self, image_path: Path):
-        with open(image_path, "rb") as image_file:
-            image_data = base64.b64encode(image_file.read()).decode("utf-8")
-
+    def update_towards_goal(self, image_data: str):
         prompt = TOWARDS_GOAL_PROMPT.format(goal=self._goal, memory=self._memory)
 
         response = self.client.chat.completions.create(

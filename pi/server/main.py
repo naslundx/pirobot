@@ -17,9 +17,7 @@ from .engine import Engine
 
 # Load environment variables
 load_dotenv()
-HOME_DIR = Path(os.environ['HOME'])
-LATEST_IMG_PATH = HOME_DIR / "latest.jpg"
-CAMERA_STREAM_FPS = 2
+CAMERA_STREAM_FPS = 1
 
 # HW interface
 GPIO.setmode(GPIO.BCM)
@@ -38,9 +36,10 @@ def background_task():
             time.sleep(3)
             continue
 
+        print("AI running")
         command = ai.get_next_command()
         if command is None:
-            ai.update_towards_goal(LATEST_IMG_PATH)
+            ai.update_towards_goal(camera.cached_image)
 
         elif command == "done":
             ai.is_autonomous = False
@@ -115,14 +114,6 @@ async def send_command(request: CommandRequest):
     return {"response": response}
 
 
-@app.get("/image")
-async def get_latest_image():
-    if LATEST_IMG_PATH.exists():
-        return FileResponse(LATEST_IMG_PATH)
-
-    return None
-
-
 @app.websocket("/ws/camera")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
@@ -130,12 +121,8 @@ async def websocket_endpoint(websocket: WebSocket):
     while True:
         try:
             before = time.time()
-            camera.capture()
-
-            with open(LATEST_IMG_PATH, "rb") as image_file:
-                image_data = image_file.read()
-                encoded_data = base64.b64encode(image_data).decode("utf-8")
-                await websocket.send_text(encoded_data)
+            image_data = camera.capture_as_base64()
+            await websocket.send_text(image_data)
 
             duration = time.time() - before
             if duration < (1 / CAMERA_STREAM_FPS):

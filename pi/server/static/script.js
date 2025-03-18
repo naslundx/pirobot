@@ -57,6 +57,6 @@ function onSpeedUpdate() {
 window.onload = function () {
   connectCameraWebSocket();
   //setInterval(updateImageLoop, 5000);
-  //setInterval(updateStatus, 1000);
+  setInterval(updateStatus, 1000);
   document.getElementById("myRange").oninput = onSpeedUpdate;
 };

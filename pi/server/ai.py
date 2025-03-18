@@ -82,7 +82,10 @@ class AIConnection:
                 ]
             )
 
-        data = json.loads(response.choices[0].message.content)
+        content = response.choices[0].message.content
+        start = content.find("{")
+        end = content.find("}") + 1
+        data = json.loads(content[start:end])
 
         description = data["description"]
         memory = data["memory"]

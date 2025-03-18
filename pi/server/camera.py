@@ -10,6 +10,7 @@ class FrontCamera:
     def __init__(self):
         self._cache = ""
         self._timestamp = 0
+        self.CACHE_LIMIT = 500
 
         self.camera = Picamera2()
         main = {"format": "RGB888", "size": (640, 480)}
@@ -22,7 +23,7 @@ class FrontCamera:
 
     def capture_as_base64(self) -> str:
         timestamp = time.time() * 1000
-        if timestamp - self._timestamp < 1000:
+        if timestamp - self._timestamp < self.CACHE_LIMIT:
             return self._cache
 
         img_bytes = io.BytesIO()

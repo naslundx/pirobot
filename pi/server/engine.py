@@ -14,7 +14,7 @@ class EngineData:
     pin_direction: int
     _speed: int = 0
     _direction: Direction = Direction.FORWARD
-    _controller: GPIO.PWM = None
+    _controller: GPIO.PWM | None = None
 
     def setup(self):
         GPIO.setup(self.pin_speed, GPIO.OUT)

@@ -27,6 +27,7 @@ Current memory: {memory}
 Return a JSON with description, a memory, and a list of commands.
 """
 
+
 class AIConnection:
     def __init__(self):
         self.client = OpenAI()

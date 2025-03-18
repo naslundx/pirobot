@@ -3,6 +3,7 @@ from time import sleep
 import base64
 import io
 import os
+import time
 
 from picamera2 import Picamera2
 
@@ -10,6 +11,8 @@ from picamera2 import Picamera2
 class FrontCamera:
     def __init__(self):
         self._cache = ""
+        self._timestamp = 0
+
         self.camera = Picamera2()
         main = {"format": "RGB888", "size": (640, 480)}
         config = self.camera.create_preview_configuration(main=main)
@@ -19,14 +22,17 @@ class FrontCamera:
 
         sleep(2)
 
-    @property
-    def cached_image(self) -> str:
-        return self._cache
-
     def capture_as_base64(self) -> str:
+        timestamp = time.time() * 1000
+        if timestamp - self._timestamp < 1000:
+            return self._cache
+
         img_bytes = io.BytesIO()
         self.camera.capture_file(img_bytes, format='jpeg')
         img_bytes.seek(0)
         encoded_string = base64.b64encode(img_bytes.getvalue()).decode('utf-8')
+
         self._cache = encoded_string
+        self._timestamp = timestamp
+
         return encoded_string

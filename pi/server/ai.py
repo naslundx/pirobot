@@ -9,10 +9,10 @@ You are on a robot with wheels. You will receive a target goal, memory, and an i
 
 Example:
 Input: The goal is "Move to the next room." and the image shows an opening to another room.
-Output: A JSON with the following content: { "description": "Opening to the other room far ahead. Nothing else intersting in the room.", "memory": "No openings found to the left or to the right. Stop after the room has been entered.", "commands": ["forward", "forward", "forward"]}
+Output: A JSON with the following content: {{ "description": "Opening to the other room far ahead. Nothing else intersting in the room.", "memory": "No openings found to the left or to the right. Stop after the room has been entered.", "commands": ["forward", "forward", "forward"] }}
 
 Input: The goal is "Locate the clown" and the image shows a clown.
-Output: A JSON with the following content: { "description": "A large clown covers most of the image. Goal has been reached.", "memory": "Clown was not located in the room that's behind.", "commands": ["done"]}
+Output: A JSON with the following content: {{ "description": "A large clown covers most of the image. Goal has been reached.", "memory": "Clown was not located in the room that's behind.", "commands": ["done"] }}
 
 Possible commands:
 FORWARD, REVERSE: Moves forward or backward for 2 seconds and then stops.

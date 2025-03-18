@@ -94,3 +94,8 @@ class AIConnection:
         self._latest_description = description
         self._memory = memory
         self._commands = commands
+
+        print("---")
+        print("AI Description:", self._latest_description)
+        print("AI Memory:", self._memory)
+        print("AI commands:", self._commands)

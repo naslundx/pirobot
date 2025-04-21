@@ -28,7 +28,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 def background_task():
     while True:
         if not ai.is_autonomous:
-            time.sleep(3)
+            time.sleep(2)
             continue
 
         command = ai.get_next_command()
@@ -46,7 +46,7 @@ def background_task():
             ai.is_autonomous = False
         else:
             handle_command(command)
-            time.sleep(1.25)
+            time.sleep(1.0)
 
 thread = threading.Thread(target=background_task, daemon=True)
 thread.start()
@@ -137,5 +137,9 @@ async def websocket_endpoint(websocket: WebSocket):
 async def ask_chatgpt(request: Request):
     data = await request.json()
     user_input = data.get("query", "")
-    response = ai.get_response(user_input)
+    if not user_input:
+        return {}
+
+    image_data = camera.capture_as_base64()
+    response = ai.get_response(user_input, image_data)
     return response

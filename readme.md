@@ -15,4 +15,7 @@ pip install -r requirements.txt
 ```
 
 # auto boot?
-<!-- unclear start.sh -->
+```sh
+echo "alias robot='cd ~/pirobot && source ./.venv/bin/activate && git pull origin && cd server && fastapi run main.py --host 0.0.0.0'" >> ~/.bashrc
+source ~/.bashrc
+```
